@@ -1,0 +1,3 @@
+# Yera will set the container's network here
+
+# 4 containers: backend, frontend, DB, Kafka (MOM) 

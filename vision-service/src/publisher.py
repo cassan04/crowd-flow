@@ -1,0 +1,1 @@
+# Here you manage how you send the data obtained from the video (API POST or MOM, better to use Kafka)
