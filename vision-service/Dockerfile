@@ -1,1 +1,0 @@
-# Build the Docker image for this module.
