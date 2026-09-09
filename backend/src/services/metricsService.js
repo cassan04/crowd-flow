@@ -1,0 +1,1 @@
+//Here we apply validations about the metrics we are received from the kafka consumer
