@@ -1,0 +1,1 @@
+//The connection with the database is made here, and the metrics are stored in the database.
