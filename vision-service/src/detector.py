@@ -9,7 +9,7 @@ import datetime
 # 1. Crear el publicador (equivalente a tu nodo en ROS2)
 # Tus compañeros te indicarán la IP y el puerto (por defecto suele ser localhost:9092)
 producer = KafkaProducer(
-    bootstrap_servers=['localhost:9092'],
+    bootstrap_servers=['kafka_broker:9092'],
     value_serializer=lambda v: json.dumps(v).encode('utf-8')
 )
 
@@ -42,7 +42,7 @@ while cap.isOpened():
 
     # # Esta parte hay que cambiarla por el POST del JSON
     # # Salida por consola para simular el envío al backend
-    # print(json.dumps(datos_ocupacion))
+    print(json.dumps(datos_ocupacion))
 
     # 2. Publicar el mensaje en el topic
     # Esto envía el JSON sin bloquear tu bucle de visión
