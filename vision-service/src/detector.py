@@ -11,8 +11,8 @@ def main():
     model = YOLO("yolov8n.pt")
     publisher = OccupancyPublisher(broker='kafka:9092', topic='afluencia_personas_topic') # Ajusta el topic al tuyo
     
-    # 2. Cargar fuente de datos (la ruta relativa dentro de Docker)
-    cap = cv2.VideoCapture("Dataset/mall_dataset/frames/seq_%06d.jpg")
+    # 2. Cargar fuente de datos (la ruta relativa dentro de Docker) Ruta absoluta dentro del Docker
+    cap = cv2.VideoCapture("/app/Dataset/mall_dataset/frames/seq_%06d.jpg")
 
     # 3. Bucle principal de inferencia
     while cap.isOpened():
