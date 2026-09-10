@@ -56,7 +56,7 @@ fi
 # 6. Arranque de contenedores según entorno
 if [ "$MODE" = "dev" ]; then
     echo -e "${BLUE}--- DEVELOPMENT MODE (CROWD-FLOW) ---${NC}"
-    $DOCKER_BE --profile dev up -d --build || error_exit "Docker compose failed to start."
+    $DOCKER_BE up -d --build || error_exit "Docker compose failed to start."
     
     echo -e "\n${GREEN}Development environment ready!${NC}"
     echo -e "Frontend (Vite):   ${BLUE}http://localhost:5173${NC}"
@@ -71,7 +71,7 @@ else
         error_exit "Frontend directory not found."
     fi
     echo "Starting production containers..."
-    $DOCKER_BE --profile prod up -d --build || error_exit "Docker compose failed to start."
+    $DOCKER_BE --profile prod up -d --build database zookeeper kafka backend vision-service apache || error_exit "Docker compose failed to start."
     
     echo -e "\n${GREEN}Production environment ready!${NC}"
     echo -e "Frontend (Apache): ${BLUE}http://localhost:80${NC}"

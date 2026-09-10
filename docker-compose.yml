@@ -107,7 +107,6 @@ services:
     restart: unless-stopped
 
   frontend:
-    profiles: ['dev']
     build:
       context: .
       dockerfile: docker/Dockerfile.frontend
