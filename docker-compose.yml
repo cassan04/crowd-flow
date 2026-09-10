@@ -16,6 +16,7 @@ services:
       POSTGRES_PASSWORD: ${DB_PASSWORD:-examplepassword}
     volumes:
       - postgres_data:/var/lib/postgresql/data:Z
+      - ./sql/init.sql:/docker-entrypoint-initdb.d/01-init.sql:ro,Z
     networks:
       - app-network
     restart: unless-stopped

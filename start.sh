@@ -53,10 +53,27 @@ if [ "$MODE" != "dev" ]; then
     done
 fi
 
+initialize_database() {
+    echo -e "${BLUE}Initializing database schema...${NC}"
+
+    for _ in {1..30}; do
+        if docker exec postgres_db pg_isready \
+            -U "${DB_USER:-root}" \
+            -d "${DB_NAME:-afluencia_db}" >/dev/null 2>&1; then
+            ./sql.sh || error_exit "Database schema initialization failed."
+            return
+        fi
+        sleep 1
+    done
+
+    error_exit "PostgreSQL did not become ready in time."
+}
+
 # 6. Arranque de contenedores según entorno
 if [ "$MODE" = "dev" ]; then
     echo -e "${BLUE}--- DEVELOPMENT MODE (CROWD-FLOW) ---${NC}"
     $DOCKER_BE up -d --build || error_exit "Docker compose failed to start."
+    initialize_database
     
     echo -e "\n${GREEN}Development environment ready!${NC}"
     echo -e "Frontend (Vite):   ${BLUE}http://localhost:5173${NC}"
@@ -72,6 +89,7 @@ else
     fi
     echo "Starting production containers..."
     $DOCKER_BE --profile prod up -d --build database zookeeper kafka backend vision-service apache || error_exit "Docker compose failed to start."
+    initialize_database
     
     echo -e "\n${GREEN}Production environment ready!${NC}"
     echo -e "Frontend (Apache): ${BLUE}http://localhost:80${NC}"
