@@ -1,6 +1,6 @@
 //The connection with the database is made here, and the metrics are stored in the database.
 
-const pool = require('../config/db');
+import pool from '../config/db.js';
 
 const saveMetrics = async (id, timestamp, camera_id, total_people) => {
     const query = `
@@ -17,6 +17,4 @@ const saveMetrics = async (id, timestamp, camera_id, total_people) => {
     }
 };
 
-module.exports = {
-    saveMetrics
-};
+export default saveMetrics;

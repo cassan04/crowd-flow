@@ -1,4 +1,4 @@
-const pool = require('../config/db')
+import pool from '../config/db.js';
 
 const getStatus = async (req, res) => {
     try {
@@ -15,6 +15,4 @@ const getStatus = async (req, res) => {
     }
 }
 
-module.exports = {
-    getStatus
-}
+export default getStatus;
