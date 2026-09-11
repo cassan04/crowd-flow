@@ -1,5 +1,6 @@
 //Here we apply validations about the metrics we are received from the kafka consumer
-import metricsModel from '../models/metricsModel.js';
+import saveMetrics from '../models/metricsModel.js';
+
 /**
  * Processes detected metrics and saves them to the database or discards them based on certain conditions.
  * @param {Object} metrics - The metrics object received from the kafka consumer
@@ -12,7 +13,7 @@ const processDetectedMetrics = async (metrics, lastTotalPeople) => {
     if (total_people === undefined || total_people < 0) return; // Ignore invalid metrics
     if (total_people === lastTotalPeople) return; // Ignore if the total_people count hasn't changed
    
-    return await metricsModel.saveMetrics(id, timestamp, camera_id, total_people);
+    return await saveMetrics(id, timestamp, camera_id, total_people);
 };
 
 export default processDetectedMetrics;
