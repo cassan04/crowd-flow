@@ -76,23 +76,24 @@ if [ "$MODE" = "dev" ]; then
     initialize_database
     
     echo -e "\n${GREEN}Development environment ready!${NC}"
-    echo -e "Frontend (Vite):   ${BLUE}http://localhost:5173${NC}"
+    # echo -e "Frontend (Vite):   ${BLUE}http://localhost:5173${NC}"
     echo -e "Backend API:       ${BLUE}http://localhost:${API_PORT:-5000}${NC}"
     echo -e "PostgreSQL:        ${BLUE}localhost:5432${NC}"
     echo -e "Kafka Broker:      ${BLUE}localhost:9092${NC}"
     echo -e "Logs:              ${BLUE}$DOCKER_BE --profile dev logs -f${NC}"
     echo -e "Down:              ${BLUE}$DOCKER_BE --profile dev down${NC}"
 else
-    echo -e "${GREEN}--- PRODUCTION MODE (APACHE) ---${NC}"
-    if [ ! -d "frontend" ]; then
-        error_exit "Frontend directory not found."
-    fi
+    echo -e "${GREEN}--- PRODUCTION MODE ---${NC}"
+    # Frontend temporarily disabled (see docker-compose.yml)
+    # if [ ! -d "frontend" ]; then
+    #     error_exit "Frontend directory not found."
+    # fi
     echo "Starting production containers..."
-    $DOCKER_BE --profile prod up -d --build database zookeeper kafka backend vision-service apache || error_exit "Docker compose failed to start."
+    $DOCKER_BE --profile prod up -d --build database zookeeper kafka backend vision-service || error_exit "Docker compose failed to start."
     initialize_database
-    
+
     echo -e "\n${GREEN}Production environment ready!${NC}"
-    echo -e "Frontend (Apache): ${BLUE}http://localhost:80${NC}"
+    # echo -e "Frontend (Apache): ${BLUE}http://localhost:80${NC}"
     echo -e "Backend API:       ${BLUE}http://localhost:${API_PORT:-5000}${NC}"
     echo -e "PostgreSQL:        ${BLUE}localhost:5432${NC}"
     echo -e "Logs:              ${BLUE}$DOCKER_BE --profile prod logs -f${NC}"

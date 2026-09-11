@@ -2,10 +2,10 @@ FROM node:20-alpine AS development
 
 WORKDIR /app
 
-COPY frontend/package*.json ./
+COPY package*.json ./
 RUN npm install
 
-COPY frontend/ .
+COPY . .
 
 EXPOSE 5173
 
@@ -15,10 +15,10 @@ FROM node:20-alpine AS build
 
 WORKDIR /app
 
-COPY frontend/package*.json ./
+COPY package*.json ./
 RUN npm ci
 
-COPY frontend/ .
+COPY . .
 RUN npm run build
 
 FROM httpd:2.4-alpine AS production
