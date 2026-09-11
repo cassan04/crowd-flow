@@ -7,7 +7,7 @@ from ultralytics import YOLO
 
 # Importamos las herramientas de nuestros otros archivos
 from publisher import OccupancyPublisher
-#from occupancy_calculator import count_people
+from occupancy_calculator import count_people
 
 def cargar_zonas(ruta_json):
     with open(ruta_json, 'r') as f:
@@ -27,7 +27,7 @@ def main():
     zonas_poligonos = cargar_zonas("/app/zonas.json")
 
     # Variable para comprobar si ha habido un cambio en la cantidad de personas en la imágen
-    last_amount_people = None
+    last_estado_zonas = None
     publish_period = 2.0  # <-- 2. Aquí puedes cambiar el tiempo (ej: 0.5, 2.0 segundos)
     last_publish_time = 0.0 # Guarda la hora exacta del último envío
 
@@ -43,6 +43,8 @@ def main():
         # 2. Inicializar el contador para las zonas de este frame
         conteo_actual = {nombre: 0 for nombre in zonas_poligonos.keys()}
         
+        total_people = count_people(results)
+
         # 3. Extraer coordenadas y comprobar intersecciones
         for r in results:
             for box in r.boxes:
@@ -68,14 +70,27 @@ def main():
         if (conteo_actual != last_estado_zonas) and ((current_time - last_publish_time) >= publish_period):
             tiempo_actual_iso = datetime.now(timezone.utc).isoformat()
 
+            # Estructuramos el payload exacto para enviarlo a Kafka y poder imprimirlo
+            mensaje_dict = {
+                "camera_id": "zona_centro_comercial",
+                "total_people": total_people,
+                "zonas_data": conteo_actual,
+                "timestamp": tiempo_actual_iso
+            }
+
             # Publicamos el diccionario entero para que el backend tenga el desglose
             publisher.publish(
                 camera_id="zona_centro_comercial",
+                total_people=total_people,
                 zonas_data=conteo_actual,
                 timestamp=tiempo_actual_iso
             )
             
             print(f" Zonas actualizadas: {conteo_actual}")
+
+            # Imprimimos el JSON formateado (bonito) en la consola de Docker
+            print(" Mensaje JSON enviado a Kafka:")
+            print(json.dumps(mensaje_dict, indent=4))
 
             last_estado_zonas = conteo_actual.copy()
             last_publish_time = current_time
