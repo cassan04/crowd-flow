@@ -1,4 +1,4 @@
-const {Pool} = require('pg')
+import { Pool } from 'pg'
 
 const pool = new Pool({
     host: process.env.DB_HOST || 'database',
@@ -16,4 +16,4 @@ pool.on('error', (err) => {
     console.error('Error connecting to the database', err)
 })
 
-module.exports = pool
+export default pool

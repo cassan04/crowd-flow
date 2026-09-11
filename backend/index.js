@@ -1,5 +1,6 @@
-const app = require('./src/app');
-const { runConsumer } = require('./src/consumers/kafkaConsumer');
+import app from './src/app.js';
+import runConsumer from './src/consumers/kafkaConsumer.js';
+
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
