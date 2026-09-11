@@ -79,7 +79,7 @@ if [ "$MODE" = "dev" ]; then
     # echo -e "Frontend (Vite):   ${BLUE}http://localhost:5173${NC}"
     echo -e "Backend API:       ${BLUE}http://localhost:${API_PORT:-5000}${NC}"
     echo -e "PostgreSQL:        ${BLUE}localhost:5432${NC}"
-    echo -e "Kafka Broker:      ${BLUE}localhost:9092${NC}"
+    echo -e "Kafka Broker:      ${BLUE}localhost:29092${NC}"
     echo -e "Logs:              ${BLUE}$DOCKER_BE --profile dev logs -f${NC}"
     echo -e "Down:              ${BLUE}$DOCKER_BE --profile dev down${NC}"
 else
@@ -89,7 +89,7 @@ else
     #     error_exit "Frontend directory not found."
     # fi
     echo "Starting production containers..."
-    $DOCKER_BE --profile prod up -d --build database zookeeper kafka backend vision-service || error_exit "Docker compose failed to start."
+    $DOCKER_BE --profile prod up -d --build database kafka backend vision-service || error_exit "Docker compose failed to start."
     initialize_database
 
     echo -e "\n${GREEN}Production environment ready!${NC}"
