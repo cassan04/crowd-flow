@@ -3,7 +3,8 @@ import cors from 'cors';
 import helmet from 'helmet'; 
 import { express as useragent } from 'express-useragent';
 
-import healthRoutes from './routes/health.routes.js';
+import healthRouter from './routes/health.route.js';
+import metricsRouter from './routes/metrics.route.js';
 
 import corsconfig from './config/cors.config.js';
 
@@ -17,7 +18,7 @@ app.use(helmet());
 app.use(cors(corsconfig));
 app.use(useragent());
 
-app.use(`/${API_VERSION}/health`, healthRoutes);
-app.use(`/${API_VERSION}/metrics`, metricsRoutes);
+app.use(`/${API_VERSION}/health`, healthRouter);
+app.use(`/${API_VERSION}/metrics`, metricsRouter);
 
 export default app;

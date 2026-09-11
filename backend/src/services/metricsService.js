@@ -1,6 +1,5 @@
 //Here we apply validations about the metrics we are received from the kafka consumer
-const metricsModel = require('../models/metricsModel');
-
+import metricsModel from '../models/metricsModel.js';
 /**
  * Processes detected metrics and saves them to the database or discards them based on certain conditions.
  * @param {Object} metrics - The metrics object received from the kafka consumer
