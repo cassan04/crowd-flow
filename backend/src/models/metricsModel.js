@@ -1,5 +1,4 @@
 //The connection with the database is made here, and the metrics are stored in the database.
-
 import pool from '../config/db.js';
 
 const saveMetrics = async (id, timestamp, camera_id, total_people) => {
