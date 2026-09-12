@@ -19,21 +19,28 @@ set -a
 source .env
 set +a
 
-# 2. Exportar UID y GID actuales
+# 2. Comprobación de variables obligatorias
+for var in DB_NAME DB_USER DB_PASSWORD API_PORT NODE_ENV; do
+    if [ -z "${!var}" ]; then
+        error_exit "$var is not defined in .env"
+    fi
+done
+
+# 3. Exportar UID y GID actuales
 export CURRENT_UID=$(id -u 2>/dev/null || echo 1000)
 export CURRENT_GID=$(id -g 2>/dev/null || echo 1000)
 
-# 3. Detectar versión del CLI de Docker Compose
+# 4. Detectar versión del CLI de Docker Compose
 if docker compose version >/dev/null 2>&1; then
     DOCKER_BE="docker compose"
 else
     DOCKER_BE="docker-compose"
 fi
 
-# 4. Determinar modo de ejecución
-[ "${NODE_ENV:-production}" = "development" ] && MODE="dev" || MODE="prod"
+# 5. Determinar modo de ejecución
+[ "$NODE_ENV" = "development" ] && MODE="dev" || MODE="prod"
 
-# 5. Guardarraíl de seguridad en Producción
+# 6. Guardarraíl de seguridad en Producción
 if [ "$MODE" != "dev" ]; then
     FORBIDDEN_DEFAULTS=(
         "password" "admin" "root" "afluencia_db"
@@ -58,8 +65,8 @@ initialize_database() {
 
     for _ in {1..30}; do
         if docker exec postgres_db pg_isready \
-            -U "${DB_USER:-root}" \
-            -d "${DB_NAME:-afluencia_db}" >/dev/null 2>&1; then
+            -U "$DB_USER" \
+            -d "$DB_NAME" >/dev/null 2>&1; then
             ./sql.sh || error_exit "Database schema initialization failed."
             return
         fi
@@ -69,7 +76,7 @@ initialize_database() {
     error_exit "PostgreSQL did not become ready in time."
 }
 
-# 6. Arranque de contenedores según entorno
+# 7. Arranque de contenedores según entorno
 if [ "$MODE" = "dev" ]; then
     echo -e "${BLUE}--- DEVELOPMENT MODE (CROWD-FLOW) ---${NC}"
     $DOCKER_BE up -d --build || error_exit "Docker compose failed to start."
@@ -77,7 +84,7 @@ if [ "$MODE" = "dev" ]; then
     
     echo -e "\n${GREEN}Development environment ready!${NC}"
     # echo -e "Frontend (Vite):   ${BLUE}http://localhost:5173${NC}"
-    echo -e "Backend API:       ${BLUE}http://localhost:${API_PORT:-5000}${NC}"
+    echo -e "Backend API:       ${BLUE}http://localhost:${API_PORT}${NC}"
     echo -e "PostgreSQL:        ${BLUE}localhost:5432${NC}"
     echo -e "Kafka Broker:      ${BLUE}localhost:29092${NC}"
     echo -e "Logs:              ${BLUE}$DOCKER_BE --profile dev logs -f${NC}"
@@ -94,7 +101,7 @@ else
 
     echo -e "\n${GREEN}Production environment ready!${NC}"
     # echo -e "Frontend (Apache): ${BLUE}http://localhost:80${NC}"
-    echo -e "Backend API:       ${BLUE}http://localhost:${API_PORT:-5000}${NC}"
+    echo -e "Backend API:       ${BLUE}http://localhost:${API_PORT}${NC}"
     echo -e "PostgreSQL:        ${BLUE}localhost:5432${NC}"
     echo -e "Logs:              ${BLUE}$DOCKER_BE --profile prod logs -f${NC}"
     echo -e "Down:              ${BLUE}$DOCKER_BE --profile prod down${NC}"

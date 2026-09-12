@@ -17,9 +17,9 @@ Each service owns its `Dockerfile` and `.dockerignore`, and `docker-compose.yml`
 
 ```
 backend/          Node.js API           
+backend/sql/      Database schema
 frontend/         React (Vite) frontend
 vision-service/   Python vision service
-sql/              Database init scripts
 ```
 
 ---
@@ -77,15 +77,15 @@ NODE_ENV=production ./start.sh
 ```
 ## 4. Initializing the Database
 
-There is no need to do this manually: `start.sh` waits for PostgreSQL to be ready and then runs `sql.sh`, which applies `sql/init.sql` to the database.
+There is no need to do this manually: `start.sh` waits for PostgreSQL to be ready and then runs `sql.sh`, which applies `backend/sql/init.sql` to the database.
 
-If you need to re-apply the schema later (e.g. after editing `sql/init.sql`) while the containers are running, execute:
+If you need to re-apply the schema later (e.g. after editing `backend/sql/init.sql`) while the containers are running, execute:
 
 ```Bash
 ./sql.sh
 ```
 
-> **Warning:** `sql/init.sql` starts with `DROP TABLE IF EXISTS occupancy_metrics`, so every run of `sql.sh` (including the one done by `start.sh`) deletes all stored metrics.
+> **Warning:** `backend/sql/init.sql` starts with `DROP TABLE IF EXISTS occupancy_metrics`, so every run of `sql.sh` (including the one done by `start.sh`) deletes all stored metrics.
 
 ## 5. Service Port Mapping
 
