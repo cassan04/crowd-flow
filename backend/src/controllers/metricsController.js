@@ -1,4 +1,4 @@
-import lastData from '../consumers/kafkaConsumer.js';
+import { lastData } from '../consumers/kafkaConsumer.js';
 
 export const getMetrics = (req, res) => {
     try {
