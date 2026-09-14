@@ -18,6 +18,13 @@ set -a
 source .env
 set +a
 
+# The containers run the node_modules installed here on the host
+for dir in backend frontend; do
+    if [ ! -d "$dir/node_modules" ]; then
+        error_exit "$dir/node_modules not found. Run: (cd $dir && npm ci)"
+    fi
+done
+
 echo -e "${BLUE}--- CROWD-FLOW APP (dev) ---${NC}"
 
 # Compose waits for the database healthcheck before starting the backend,

@@ -14,4 +14,5 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-CMD ["python", "src/detector.py"]
+# watchfiles restarts the detector whenever a .py file under src/ changes
+CMD ["watchfiles", "python src/detector.py", "src"]
