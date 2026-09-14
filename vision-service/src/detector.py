@@ -13,7 +13,10 @@ def main():
     publisher = OccupancyPublisher(broker='kafka:9092', topic='afluencia_personas_topic') # Ajusta el topic al tuyo
     
     # 2. Cargar fuente de datos (la ruta relativa dentro de Docker) Ruta absoluta dentro del Docker
-    cap = cv2.VideoCapture("/app/Dataset/mall_dataset/frames/seq_%06d.jpg")
+    # Pass the first file, not a pattern: OpenCV derives both the pattern and
+    # the starting index from the name. With "seq_%06d.jpg" it would look for
+    # seq_000000.jpg, which does not exist, and the sequence would not open.
+    cap = cv2.VideoCapture("/app/Dataset/mall_dataset/frames/seq_000001.jpg")
 
     # Variable para comprobar si ha habido un cambio en la cantidad de personas en la imágen
     last_amount_people = None
