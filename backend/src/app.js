@@ -8,7 +8,7 @@ import metricsRouter from './routes/metrics.route.js';
 
 import corsconfig from './config/cors.config.js';
 
-const API_VERSION = process.env.API_VERSION || 'v1';
+const API_VERSION = 'v1';
 const app = express();
 
 app.set('trust proxy', true);

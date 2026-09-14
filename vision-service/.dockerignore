@@ -1,0 +1,10 @@
+Dataset
+*.pt
+__pycache__
+*.pyc
+.venv
+venv
+.env
+.env.*
+Dockerfile
+.dockerignore
