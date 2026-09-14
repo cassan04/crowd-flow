@@ -10,7 +10,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 WORKDIR /app
 
 COPY requirements.txt ./
-RUN pip install --no-cache-dir -r requirements.txt
+# Install the CPU-only PyTorch build first. Otherwise ultralytics pulls the
+# default CUDA build and its nvidia-* wheels (several GB), and the container
+# has no GPU to use them.
+RUN pip install --no-cache-dir torch torchvision --index-url https://download.pytorch.org/whl/cpu \
+    && pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 

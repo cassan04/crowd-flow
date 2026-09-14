@@ -96,21 +96,20 @@ PostgreSQL, Kafka, the Python vision service, the Node.js API, and the React (Vi
 
 Stream live logs across all services:
 ```Bash
-docker compose --profile dev logs -f
+docker compose logs -f
 ```
 
-> **Note:** the `frontend` service belongs to the `dev` profile, so commands without `--profile dev` skip it. That includes `down`, which then leaves the container running and the network in use.
 Inspect logs for a specific container (e.g., Vision Service):
 ```Bash
 docker logs -f vision_app
 ```
 Stop all active containers:
 ```Bash
-docker compose --profile dev down
+docker compose down
 ```
 Stop containers and remove persistent database volumes:
 ```Bash
-docker compose --profile dev down -v
+docker compose down -v
 ```
 
 ## 6. Daily workflow

@@ -29,8 +29,7 @@ echo -e "${BLUE}--- CROWD-FLOW APP (dev) ---${NC}"
 
 # Compose waits for the database healthcheck before starting the backend,
 # so the schema can be applied as soon as this returns.
-# The frontend (Vite dev server) belongs to the dev profile.
-docker compose --profile dev up -d --build || error_exit "Docker Compose failed to start."
+docker compose up -d --build || error_exit "Docker Compose failed to start."
 ./sql.sh || error_exit "Database schema initialization failed."
 
 echo -e "\n${GREEN}Environment ready!${NC}"
@@ -38,5 +37,5 @@ echo -e "Frontend:       ${BLUE}http://localhost:5173${NC}"
 echo -e "Backend API:    ${BLUE}http://localhost:${API_PORT}${NC}"
 echo -e "PostgreSQL:     ${BLUE}localhost:5432${NC}"
 echo -e "Kafka Broker:   ${BLUE}localhost:29092${NC}"
-echo -e "To see logs:    ${BLUE}docker compose --profile dev logs -f${NC}"
-echo -e "Shut down:      ${BLUE}docker compose --profile dev down${NC}"
+echo -e "To see logs:    ${BLUE}docker compose logs -f${NC}"
+echo -e "Shut down:      ${BLUE}docker compose down${NC}"

@@ -86,7 +86,6 @@ services:
   # Development only: the Vite dev server. Production (Apache serving the built
   # assets) is not set up yet.
   frontend:
-    profiles: ['dev']
     build:
       context: ./frontend
     container_name: react_frontend
