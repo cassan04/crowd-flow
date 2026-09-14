@@ -40,7 +40,6 @@ services:
   backend:
     build:
       context: ./backend
-      target: ${NODE_ENV:?You must define NODE_ENV (development or production)}
     container_name: node_backend
     healthcheck:
       test: ["CMD-SHELL", "wget --spider -q http://127.0.0.1:${API_PORT}/v1/health || exit 1"]
@@ -59,7 +58,6 @@ services:
       KAFKA_BROKER: kafka:9092
       API_PORT: ${API_PORT:?You must define API_PORT}
       CORS_ORIGIN: ${CORS_ORIGIN:?You must define CORS_ORIGIN}
-      NODE_ENV: ${NODE_ENV}
     depends_on:
       database:
         condition: service_healthy
@@ -86,37 +84,21 @@ services:
         condition: service_healthy
     restart: unless-stopped
 
-  # Frontend disabled until Paula starts working on it
-  # To activate it, uncomment the blocks below; start.sh needs no changes.
-  #
-  # frontend:
-  #   build:
-  #     context: ./frontend
-  #     target: development
-  #   container_name: frontend_dev
-  #   volumes:
-  #     - ./frontend:/app
-  #     - /app/node_modules
-  #   ports:
-  #     - '5173:5173'
-  #   environment:
-  #     CHOKIDAR_USEPOLLING: 'true'
-  #
-  # apache:
-  #   profiles: ['prod']
-  #   build:
-  #     context: ./frontend
-  #     target: production
-  #   container_name: apache_frontend
-  #   # TODO: if Apache needs its own configuration (SPA fallback, proxy to the
-  #   # backend...), create frontend/apache/httpd.conf and mount it at
-  #   # /usr/local/apache2/conf/httpd.conf (the path used by httpd:2.4-alpine).
-  #   ports:
-  #     - '80:80'
-  #   depends_on:
-  #     backend:
-  #       condition: service_started
-  #   restart: unless-stopped
+  # Development only: the Vite dev server. Production (Apache serving the built
+  # assets) is not set up yet.
+  frontend:
+    profiles: ['dev']
+    build:
+      context: ./frontend
+    container_name: frontend_dev
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    ports:
+      - '5173:5173'
+    environment:
+      # The browser runs on the host, so it reaches the API through localhost
+      VITE_API_URL: http://localhost:${API_PORT}/v1
 
 volumes:
   postgres_data:
