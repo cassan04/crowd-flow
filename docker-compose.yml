@@ -87,7 +87,7 @@ services:
     restart: unless-stopped
 
   # Frontend disabled until Paula starts working on it
-  # To activate it, uncomment this and the corresponding parts of start.sh.
+  # To activate it, uncomment the blocks below; start.sh needs no changes.
   #
   # frontend:
   #   build:
