@@ -13,12 +13,13 @@ class OccupancyPublisher:
             value_serializer=lambda v: json.dumps(v).encode('utf-8')
         )
 
-    def publish(self, camera_id, total_people, timestamp):
+    def publish(self, camera_id, total_people, zonas_data, timestamp):
         # Genera el JSON con el ID único
         mensaje = {
             "id": str(uuid.uuid4()),
             "timestamp": timestamp,
             "camera_id": camera_id,
-            "total_people": total_people
+            "total_people": total_people,
+            "zonas_data": zonas_data
         }
         self.producer.send(self.topic, value=mensaje)
