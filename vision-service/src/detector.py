@@ -8,6 +8,7 @@ from ultralytics import YOLO
 # Importamos las herramientas de nuestros otros archivos
 from publisher import OccupancyPublisher
 from occupancy_calculator import count_people
+from zone_mapper import map_people_to_zones
 
 def cargar_zonas(ruta_json):
     with open(ruta_json, 'r') as f:
@@ -40,30 +41,13 @@ def main():
         # Detectar con YOLO
         results = model(frame, verbose=False)
         
-        # 2. Inicializar el contador para las zonas de este frame
-        conteo_actual = {nombre: 0 for nombre in zonas_poligonos.keys()}
-        
+        # Calcular ocupación total (occupancy_calculator)
         total_people = count_people(results)
 
-        # 3. Extraer coordenadas y comprobar intersecciones
-        for r in results:
-            for box in r.boxes:
-                # Comprobar que la detección es una persona (clase 0 en COCO)
-                if int(box.cls[0]) == 0:
-                    x1, y1, x2, y2 = box.xyxy[0].cpu().numpy()
-                    
-                    # Calcular el punto de los pies (centro de la base de la caja)
-                    centro_x = int((x1 + x2) / 2)
-                    base_y = int(y2)
-                    punto_pies = (centro_x, base_y)
+        # Mapear personas por zonas (zone_mapper)
+        conteo_actual = map_people_to_zones(results, zonas_poligonos)
 
-                    # Comprobar en qué zona cae el punto
-                    for nombre_zona, poligono in zonas_poligonos.items():
-                        # pointPolygonTest devuelve >= 0 si el punto está dentro o en el borde
-                        if cv2.pointPolygonTest(poligono, punto_pies, False) >= 0:
-                            conteo_actual[nombre_zona] += 1
-                            break # Asumimos que las zonas no se solapan
-
+        # Conteo del tiempo actual
         current_time = time.time()
         
         # 4. Condición de publicación ajustada a diccionarios
